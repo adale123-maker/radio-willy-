@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RadioWillyonline - Tu Radio Online</title>
+    <link rel="stylesheet" href="estilo.css">
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <header class="hero">
+        <div class="hero-container">
+            <div class="hero-text">
+                <div class="titles-wrapper">
+                    <span class="el-matador">El Matador</span>
+                    <h1 class="salsa-mami">SALSA MAMI</h1>
+                </div>
+                <div class="hero-info">
+                    <h2 class="radio-name">Radio Willy Online</h2>
+                    
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="hero.jpeg" alt="Salsa Mami Radio">
+            </div>
+        </div>
+    </header>
+
+   <section class="seccion-vivo-full">
+    <div class="vivo-grid-container">
+        
+        <article class="tarjeta-vivo">
+            <h2><i class="fas fa-broadcast-tower"></i> Radio en Vivo</h2>
+            
+            <audio id="radioPlayer" preload="none">
+                <source src="http://streaming01.radiosenlinea.com.ar:9364/;stream" type="audio/mpeg">
+            </audio>
+
+            <div class="reproductor-interior">
+                <button id="playPauseBtn" class="play-btn">
+                    <i class="fas fa-play"></i>
+                </button>
+
+                <div class="controles-audio">
+                    <div class="volumen-wrap">
+                        <i class="fas fa-volume-up"></i>
+                        <input type="range" id="volumeSlider" min="0" max="100" value="70">
+                        <span id="volumeValue">70%</span>
+                    </div>
+                    <div class="estado-vivo">
+                        <span class="punto-pulso"></span> EN VIVO
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <article class="tarjeta-vivo">
+            <h2><i class="fas fa-video"></i> Video en Vivo</h2>
+            <div class="video-proporcional">
+                <iframe src="https://www.youtube.com/embed/jfKfPfyJRdk" title="Video en vivo" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </article>
+
+    </div>
+</section>
+<section class="inferior-full-width">
+    <div class="inferior-grid">
+        
+        <div class="chat-container-box">
+            <h2><i class="fas fa-comments"></i> Chat en Vivo</h2>
+            <div class="chat-main">
+                <div id="chatMessages" class="chat-messages">
+                    <div class="mensaje-sistema">¡Bienvenido al chat de RadioWillyonline! 🎵</div>
+                </div>
+                <div class="chat-input-container">
+                    <input type="text" id="nombreInput" placeholder="Tu nombre" class="nombre-input" maxlength="20">
+                    <input type="text" id="mensajeInput" placeholder="Escribe tu mensaje..." class="mensaje-input" maxlength="200">
+                    <button id="enviarBtn" class="enviar-btn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="app-download-box">
+            <h2><i class="fas fa-mobile-alt"></i> Nuestra App</h2>
+            <div class="app-card">
+                <img src="imagen.jpg" alt="Radio Willy App" class="app-img">
+                <p>¡Escuchanos en cualquier lugar! Descarga nuestra aplicación oficial para Android.</p>
+                <a href="https://play.google.com/store/apps/details?id=radio.a4" target="_blank" class="playstore-btn">
+                    <i class="fab fa-google-play"></i> Google Play
+                </a>
+            </div>
+        </div>
+
+    </div>
+</section>
+        <section class="redes-full-width">
+            <div class="redes-content-centered">
+
+                <div class="redes-header">
+                    <i class="fas fa-share-alt"></i>
+                    <span>SÍGUENOS EN REDES</span>
+                </div>
+
+                <div class="redes-container-neon">
+                    <a href="https://www.facebook.com/share/1C6hKRFcVy/" target="_blank" class="red-social-btn fb-neon">
+                        <i class="fab fa-facebook-f"></i>
+                        <span>Facebook</span>
+                    </a>
+
+                    <a href="https://wa.me/5493774464248" target="_blank" class="red-social-btn wa-neon">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>WhatsApp</span>
+                    </a>
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+        <footer class="footer-full-width">
+            <div class="footer-content">
+                <p>&copy; 2025 <span>RadioWillyonline</span>. Todos los derechos reservados.</p>
+                <p class="slogan-footer">Música que conecta </p>
+            </div>
+        </footer>
+
+        <!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+<!-- SCRIPT DEL REPRODUCTOR -->
+<script>
+    const audio = document.getElementById('radioPlayer');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const volumeValue = document.getElementById('volumeValue');
+    const playIcon = playPauseBtn.querySelector('i');
+
+    // PLAY / PAUSA
+    playPauseBtn.addEventListener('click', () => {
+        if (audio.paused) {
+            audio.load(); // vuelve a vivo
+            audio.play();
+            playIcon.classList.remove('fa-play');
+            playIcon.classList.add('fa-pause');
+        } else {
+            audio.pause();
+            playIcon.classList.remove('fa-pause');
+            playIcon.classList.add('fa-play');
+        }
+    });
+
+    // VOLUMEN
+    volumeSlider.addEventListener('input', (e) => {
+        const value = e.target.value;
+        audio.volume = value / 100;
+        volumeValue.textContent = value + '%';
+    });
+</script>
+
+<!-- TU JS PRINCIPAL -->
+<script src="index.js"></script>
+<div class="cinta-lateral cinta-izquierda">
+    <div class="texto-movimiento">
+        PUBLICITE CON NOSOTROS • PUBLICITE CON NOSOTROS • PUBLICITE CON NOSOTROS • 
+    </div>
+</div>
+
+<div class="cinta-lateral cinta-derecha">
+    <div class="texto-movimiento">
+        PUBLICITE CON NOSOTROS • PUBLICITE CON NOSOTROS • PUBLICITE CON NOSOTROS • 
+    </div>
+</div>
+</body>
+</html>
+
+
+
+
