@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    // === CONFIGURACIÓN DE FIREBASE (Datos reales de Radio Willy) ===
+    // === CONFIGURACIÓN DE FIREBASE ===
     const firebaseConfig = {
         apiKey: "AIzaSyAITOn24kRQLGoSIolT1TM5Snv-1AraN_s",
         authDomain: "radio-willy-chat.firebaseapp.com",
@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
         measurementId: "G-9JNCKV30T3"
     };
 
-    // === INICIALIZAR FIREBASE ===
+    // Inicializar Firebase
     if (!firebase.apps.length) {
         firebase.initializeApp(firebaseConfig);
     }
@@ -20,17 +20,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const db = firebase.database();
     const mensajesRef = db.ref("mensajes");
 
-    // === ELEMENTOS DEL CHAT (Corregidos para tu HTML) ===
+    // === AQUÍ ES DONDE VAN LAS 4 LÍNEAS (IMPORTANTÍSIMO) ===
+    const areaChat = document.getElementById("chat-messages");
     const inpNombre = document.getElementById("nombreInput");
     const inpMensaje = document.getElementById("mensajeInput");
     const btnEnviar = document.getElementById("enviarBtn");
-    const areaChat = document.getElementById("chat-messages"); // Corregido: llevaba guion
 
     // === ENVIAR MENSAJE ===
     if (btnEnviar && inpNombre && inpMensaje) {
         btnEnviar.onclick = (e) => {
             e.preventDefault(); 
-
             const nombre = inpNombre.value.trim();
             const mensaje = inpMensaje.value.trim();
 
@@ -45,15 +44,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 tiempo: Date.now()
             });
 
-            inpMensaje.value = ""; // Limpiar solo el cuadro de mensaje
+            inpMensaje.value = ""; 
         };
     }
 
-    // === RECIBIR MENSAJES (Sincronización en tiempo real) ===
+    // === RECIBIR Y MOSTRAR MENSAJES ===
     if (areaChat) {
         mensajesRef.limitToLast(50).on("child_added", (snapshot) => {
             const data = snapshot.val();
-
             const div = document.createElement("div");
             div.style.marginBottom = "8px";
             div.style.padding = "5px";
@@ -61,12 +59,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 <b style="color:#00ffff">${data.usuario}:</b>
                 <span style="color:white">${data.texto}</span>
             `;
-
             areaChat.appendChild(div);
-            
-            // Auto-scroll para ver siempre el último mensaje
             areaChat.scrollTop = areaChat.scrollHeight;
         });
     }
-
 });
