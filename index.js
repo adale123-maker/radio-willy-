@@ -2,9 +2,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // === CONFIGURACIÓN DE FIREBASE ===
     const firebaseConfig = {
-        apiKey: "AIzaSyAITOn24kRQLGoSIolT1TM5Snv-1AraN_s",
+        apiKey: "AIzaSyAITOn24kRQLGoSIoLT1TM5Snv-1AraN_s",
         authDomain: "radio-willy-chat.firebaseapp.com",
-        databaseURL: "https://radio-willy-chat-default-rtdb.firebaseio.com",
+        databaseURL: "https://radio-willy-chat-default-rtdb.firebaseio.com/",
         projectId: "radio-willy-chat",
         storageBucket: "radio-willy-chat.firebasestorage.app",
         messagingSenderId: "593328601256",
@@ -12,31 +12,43 @@ document.addEventListener("DOMContentLoaded", () => {
         measurementId: "G-9JNCKV30T3"
     };
 
-    // Inicializar Firebase
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
+    // === VERIFICAR QUE FIREBASE EXISTA ===
+    if (typeof firebase === "undefined") {
+        console.error("Firebase no está cargado");
+        return;
     }
 
-    const db = firebase.database();
-    const mensajesRef = db.ref("mensajes");
+   // === INICIALIZAR FIREBASE ===
+    let db;
+    let mensajesRef; // 1. Agregamos esta línea aquí arriba
 
-    // === AQUÍ ES DONDE VAN LAS 4 LÍNEAS (IMPORTANTÍSIMO) ===
-    const areaChat = document.getElementById("chat-messages");
+    try {
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        db = firebase.database();
+        mensajesRef = db.ref("mensajes"); // 2. Quitamos el "const" de aquí
+        
+        console.log("✅ Conexión establecida");
+    } catch (e) {
+        console.error("Error al inicializar Firebase:", e);
+    }
+
+    // === ELEMENTOS DEL CHAT ===
     const inpNombre = document.getElementById("nombreInput");
     const inpMensaje = document.getElementById("mensajeInput");
     const btnEnviar = document.getElementById("enviarBtn");
+    const areaChat = document.getElementById("chatMessages");
 
     // === ENVIAR MENSAJE ===
     if (btnEnviar && inpNombre && inpMensaje) {
-        btnEnviar.onclick = (e) => {
-            e.preventDefault(); 
+        btnEnviar.addEventListener("click", (e) => {
+    e.preventDefault(); // 🚫 evita el doble envío
+
             const nombre = inpNombre.value.trim();
             const mensaje = inpMensaje.value.trim();
 
-            if (nombre === "" || mensaje === "") {
-                alert("Por favor, escribe tu nombre y un mensaje.");
-                return;
-            }
+            if (nombre === "" || mensaje === "") return;
 
             mensajesRef.push({
                 usuario: nombre,
@@ -44,23 +56,25 @@ document.addEventListener("DOMContentLoaded", () => {
                 tiempo: Date.now()
             });
 
-            inpMensaje.value = ""; 
-        };
+            inpMensaje.value = "";
+        });
     }
 
-    // === RECIBIR Y MOSTRAR MENSAJES ===
+    // === RECIBIR MENSAJES ===
     if (areaChat) {
         mensajesRef.limitToLast(50).on("child_added", (snapshot) => {
             const data = snapshot.val();
+
             const div = document.createElement("div");
             div.style.marginBottom = "8px";
-            div.style.padding = "5px";
             div.innerHTML = `
                 <b style="color:#00ffff">${data.usuario}:</b>
                 <span style="color:white">${data.texto}</span>
             `;
+
             areaChat.appendChild(div);
             areaChat.scrollTop = areaChat.scrollHeight;
         });
     }
+
 });

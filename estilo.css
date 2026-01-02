@@ -1170,3 +1170,68 @@ body {
     66% { color: #ccff00; text-shadow: 0 0 10px #ccff00; }
     100% { color: #ff00ff; text-shadow: 0 0 10px #ff00ff; }
 }
+/* =========================================
+   REPARACIÓN DE PUBLICIDAD Y LÍNEA VIOLETA
+   ========================================= */
+
+/* 1. Fondo negro SOLO para el bloque de publicidad y redes */
+/* Quitamos el 'section' genérico para no romper el resto de la página */
+.publicidad-slider-container, 
+.redes-container {
+    background-color: #000000 !important;
+    margin: 0; 
+    padding: 10px 0;
+    width: 100%;
+}
+
+/* 2. La línea Violeta Divisoria */
+/* La hacemos independiente para que separe las secciones sin dejar ver fondo gris */
+.linea-divisoria {
+    height: 2px;
+    background-color: #ff00ff; /* Violeta Neón */
+    box-shadow: 0 0 10px #ff00ff; /* Brillo neón */
+    width: 100%;
+    border: none;
+    margin: 0;
+}
+
+/* 3. El cuadro de Publicidad (Corregido para que no flote en gris) */
+.publicidad-slider {
+    width: 90%;
+    max-width: 900px;
+    height: 350px;
+    margin: 30px auto; /* Espacio arriba y abajo del cuadro */
+    position: relative;
+    background-color: #000000;
+    border: 3px solid #ff00ff;
+    border-radius: 20px;
+    box-shadow: 0 0 20px #ff00ff;
+    overflow: hidden;
+}
+
+/* 4. Imágenes y Animación de Ruleta (Mantenemos tus 10 segundos) */
+.slide {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Imagen completa sin estirar */
+    background-color: #000000;
+    transform: translateX(100%);
+    animation: ruletaAnimacion 50s infinite;
+}
+
+/* Delays para 5 imágenes */
+.s1 { animation-delay: 0s; }
+.s2 { animation-delay: 10s; }
+.s3 { animation-delay: 20s; }
+.s4 { animation-delay: 30s; }
+.s5 { animation-delay: 40s; }
+
+@keyframes ruletaAnimacion {
+    0%   { transform: translateX(100%); }   /* Viene de la derecha */
+    2%   { transform: translateX(0%); }     /* Entra al centro */
+    18%  { transform: translateX(0%); }     /* Espera 10 segundos */
+    20%  { transform: translateX(-100%); }  /* Sale por la izquierda */
+    100% { transform: translateX(-100%); }  /* Se queda fuera */
+}
